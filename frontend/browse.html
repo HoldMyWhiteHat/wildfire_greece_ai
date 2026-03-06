@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fire Risk Explorer</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    header {
+      padding: 10px;
+      background: #1e1e1e;
+      color: white;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 50px);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Fire Risk Explorer
+  <select id="mapSelect"></select>
+  <button onclick="prev()">◀</button>
+  <button onclick="next()">▶</button>
+</header>
+
+<iframe id="mapFrame"></iframe>
+
+<script>
+let maps = [];
+let index = 0;
+
+fetch("/api/maps")
+  .then(r => r.json())
+  .then(data => {
+    maps = data;
+    const select = document.getElementById("mapSelect");
+
+    maps.forEach((m, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.text = m;
+      select.appendChild(opt);
+    });
+
+    load(0);
+  });
+
+function load(i) {
+  index = i;
+  document.getElementById("mapFrame").src = "/maps/" + maps[i];
+  document.getElementById("mapSelect").value = i;
+}
+
+function prev() {
+  if (index > 0) load(index - 1);
+}
+
+function next() {
+  if (index < maps.length - 1) load(index + 1);
+}
+
+document.getElementById("mapSelect").onchange = e => {
+  load(parseInt(e.target.value));
+};
+</script>
+
+</body>
+</html>

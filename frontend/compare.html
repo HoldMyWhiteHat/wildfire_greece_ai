@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fire Risk Comparison</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+    }
+
+    header {
+      padding: 10px;
+      background: #1e1e1e;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .maps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: calc(100vh - 60px);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    select {
+      padding: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Compare dates:
+  <select id="leftSelect"></select>
+  vs
+  <select id="rightSelect"></select>
+</header>
+
+<div class="maps">
+  <iframe id="leftMap"></iframe>
+  <iframe id="rightMap"></iframe>
+</div>
+
+<script>
+let maps = [];
+
+fetch("/api/maps")
+  .then(r => r.json())
+  .then(data => {
+    maps = data;
+
+    const left = document.getElementById("leftSelect");
+    const right = document.getElementById("rightSelect");
+
+    maps.forEach((m, i) => {
+      const o1 = new Option(m, i);
+      const o2 = new Option(m, i);
+      left.add(o1);
+      right.add(o2);
+    });
+
+    // default: first & last
+    loadLeft(0);
+    loadRight(maps.length - 1);
+  });
+
+function loadLeft(i) {
+  document.getElementById("leftMap").src = "/maps/" + maps[i];
+}
+
+function loadRight(i) {
+  document.getElementById("rightMap").src = "/maps/" + maps[i];
+}
+
+document.getElementById("leftSelect").onchange = e =>
+  loadLeft(e.target.value);
+
+document.getElementById("rightSelect").onchange = e =>
+  loadRight(e.target.value);
+</script>
+
+</body>
+</html>
