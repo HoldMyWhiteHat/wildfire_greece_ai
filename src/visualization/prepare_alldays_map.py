@@ -19,7 +19,7 @@ def risk_color_class(c):
         "#F1C40F",  # low
         "#E67E22",  # medium
         "#E74C3C",  # high
-        "#8E44AD",  # very high
+        "#8E44AD",  # Extreme
     ][c]
 
 
